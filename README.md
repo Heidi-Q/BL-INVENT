@@ -36,7 +36,8 @@ Installation
 1. Edit template Json file (for example in MsbA/msba_blinvent_config.json).
 
    Templates can be manually edited before using. The only thing that needs modification for a standard run are the file and folder paths. Most running modes produce logs that can be monitored by tensorboard
-2. python input.py config.json
+2. Using the Json file path as the parameter of input.py.
+        $ python input.py <config.json>
 
 ## Analyse the results
 
