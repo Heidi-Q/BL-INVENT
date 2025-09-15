@@ -1,0 +1,62 @@
+{
+  "docking": {
+    "header": {
+      "logging": {
+        "logfile": "/path/to/BL-Invent-master/MsbA/docking_result/ADV_docking.log"
+      }
+    },
+    "ligand_preparation": {
+      "embedding_pools": [
+        {
+          "pool_id": "RDkit_pool",
+          "type": "RDkit",
+          "parameters": {
+            "prefix_execution": "module load RDkit"
+          },
+          "input": {
+            "standardize_smiles": false,
+            "type": "sdf",
+            "input_path": "/path/to/BL-Invent-master/MsbA/process/rearranged_h_mini.sdf"
+          }
+        }
+      ]
+    },
+    "docking_runs": [
+      {
+        "backend": "AutoDockVina",
+        "run_id": "AutoDockVina",
+        "input_pools": [
+          "RDkit_pool"
+        ],
+        "parameters": {
+          "binary_location": "/path/to/BL-Invent-master/ADV",
+          "parallelization": {
+            "number_cores": 100
+          },
+          "seed": 42,
+          "receptor_pdbqt_path": [
+            "/path/to/BL-Invent-master/MsbA/data/8gk7_apo.pdbqt"
+          ],
+          "number_poses": 2,
+          "search_space": {
+            "--center_x": 137.03,
+            "--center_y": 137.16,
+            "--center_z": 167.15,
+            "--size_x": 40,
+            "--size_y": 40,
+            "--size_z": 40
+          },
+          "local_only": true
+        },
+        "output": {
+          "poses": {
+            "poses_path": "/path/to/BL-Invent-master/MsbA/docking_result/ADV_ligands_docked.sdf"
+          },
+          "scores": {
+            "scores_path": "/path/to/BL-Invent-master/MsbA/docking_result/ADV_scores.csv"
+          }
+        }
+      }
+    ]
+  }
+}

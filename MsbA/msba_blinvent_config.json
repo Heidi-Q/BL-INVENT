@@ -1,0 +1,157 @@
+{
+    "version": 3,
+    "model_type": "link_invent",
+    "run_type": "reinforcement_learning",
+    "logging": {
+        "sender": "",
+        "recipient": "local",
+        "logging_path": "/path/to/BL-Invent-master/MsbA/progress_log",
+        "result_folder": "/path/to/BL-Invent-master/MsbA/docking_result",
+        "job_name": "BL-INVENT",
+        "job_id": "N/A"
+    },
+    "parameters": {
+        "actor": "/path/to/BL-Invent-master/MsbA/data/linkinvent.prior",
+        "critic": "/path/to/BL-Invent-master/MsbA/data/linkinvent.prior",
+        "warheads": [
+            "O=C([O-])c1c[100c](*)ccc1NS(=O)(=O)c2ccc(cc2)CCCC|O=C([O-])c1c[101c](*)ccc1NS(=O)(=O)c2ccc(cc2)CCCC"
+        ],
+        "n_steps": 200,
+        "learning_rate": 0.0001,
+        "batch_size": 128,
+        "randomize_warheads": true,
+        "learning_strategy": {
+            "name": "dap",
+            "parameters": {
+                "sigma": 120
+            }
+        },
+        "scoring_strategy": {
+            "name": "link_invent",
+            "diversity_filter": {
+                "bucket_size": 25,
+                "minscore": 0,
+                "minsimilarity": 0,
+                "name": "IdenticalMurckoScaffold"
+            },
+            "scoring_function": {
+                "name": "custom_sum",
+                "parallel": false,
+                "parameters": [
+                    {
+                        "component_type": "parallel_rocs_similarity",
+                        "name": "Tanimoto ROCS sim",
+                        "specific_parameters": {
+                            "shape_weight": 1.0,
+                            "color_weight": 0.0,
+                            "custom_cff": "/path/to/BL-Invent-master/MsbA/data/8gk7_ligand.cff",
+                            "enumerate_stereo": true,
+                            "input_type": "shape_query",
+                            "max_num_cpus": 100,
+                            "rocs_input": "/path/to/BL-Invent-master/MsbA/data/8gk7_ligand.sq",
+                            "similarity_measure": "Tanimoto",
+                            "transformation": {
+                                "transformation_type": "no_transformation"
+                            },
+                            "rocs_overlays_dir": "/path/to/BL-Invent-master/MsbA/process",
+                            "save_rocs_overlays": true,
+                            "warhead1_reference": "/path/to/BL-Invent-master/MsbA/data/8gk7_warhead1_isotope.sdf",
+                            "warhead2_reference": "/path/to/BL-Invent-master/MsbA/data/8gk7_warhead2_isotope.sdf",
+                            "minimization_config": "/path/to/BL-Invent-master/MsbA/process/minimization_with_constrain.com"
+                        },
+                        "weight": 0
+                    },
+
+                    {
+                        "weight": 1,
+                        "component_type": "linker_num_aromatic_rings",
+                        "name": "Linker Num Aromatic Rings",
+                        "specific_parameters": {
+                        "transformation": {
+                            "high": 1,
+                            "low": 0,
+                            "transformation_type": "step"
+                            }
+                        }
+                    },
+
+                    {
+                        "weight": 1,
+                        "component_type": "linker_num_aliphatic_rings",
+                        "name": "Linker Num Aliphatic Rings",
+                        "specific_parameters": {
+                        "transformation": {
+                            "high": 1,
+                            "low": 0,
+                            "transformation_type": "step"
+                            }
+                        }
+                    },
+
+                    {
+                        "weight": 1,
+                        "component_type": "linker_mol_weight",
+                        "name": "Linker Mol Weight",
+                        "specific_parameters": {
+                        "transformation": {
+                            "high": 200,
+                            "low": 70,
+                            "transformation_type": "step"
+                            }
+                        }
+                    },
+
+                    {
+                        "weight": 1,
+                        "component_type": "linker_effective_length",
+                        "name": "Linker Effective Length",
+                        "specific_parameters": {
+                        "transformation": {
+                            "high": 7,
+                            "low": 4,
+                            "transformation_type": "step"
+                            }
+                        }
+                    },
+
+
+                    {
+                        "component_type": "dockstream",
+                        "name": "ADV",
+                        "weight": 1,
+                        "specific_parameters": {
+                            "transformation": {
+                                "transformation_type": "reverse_sigmoid",
+                                "low": -15,
+                                "high": -5,
+                                "k": 0.25
+                            },
+                            "configuration_path": "/path/to/BL-Invent-master/MsbA/msba_blinvent_config.json",
+                            "docker_script_path": "/path/to/DockStream-master/docker.py",
+
+                            "environment_path": "/path/to/DockStream/bin/python"
+                        }
+                    },
+                    {
+                        "component_type": "docked_parallel_rocs_similarity",
+                        "name": "PostDock Tanimoto ROCS sim",
+                        "specific_parameters": {
+                            "shape_weight": 1.0,
+                            "color_weight": 0.0,
+                            "enumerate_stereo": true,
+                            "input_type": "sdf",
+                            "max_num_cpus": 120,
+                            "rocs_input": "/path/to/BL-Invent-master/MsbA/data/warheads.sdf",
+                            "similarity_measure": "Tanimoto",
+                            "transformation": {
+                                "transformation_type": "no_transformation"
+                            },
+                            "docked_poses_path": "/path/to/BL-Invent-master/MsbA/data/docking_result"
+                        },
+                        "weight": 1
+                    }
+                ]
+            }
+        }
+    }
+}
