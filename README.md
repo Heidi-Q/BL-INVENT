@@ -37,10 +37,20 @@ Installation
 
    Templates can be manually edited before using. The only thing that needs modification for a standard run are the file and folder paths. Most running modes produce logs that can be monitored by tensorboard
 2. Using the Json file path as the parameter of input.py.
+
+        $ cd reinvent_scoring
+
+        $ pip install reinvent_scoring-0.0.73_bq-py3-none-any.whl
+
+   
         $ python input.py <config.json>
 
 ## Analyse the results
 
-1. tensorboard --logdir "progress.log"
+        $ cd reinvent_scoring
 
-    progress.log is the "logging_path" in template.json
+        $ pip install reinvent_scoring-0.0.73_bq-py3-none-any.whl
+        
+        $ tensorboard --logdir "progress.log"
+
+        $ progress.log is the "logging_path" in template.json
