@@ -1,5 +1,5 @@
 # BL-INVENT
-Molecular generative model to design bivalent MsbA inhibitors 
+Molecular generative model to design bivalent ligands. 
 ## Quick start
 
 Installation
@@ -26,7 +26,6 @@ Installation
    This is the docking component special for Protac-invent.
 
         $ conda env create -f environment.yml
-
 
 
 
